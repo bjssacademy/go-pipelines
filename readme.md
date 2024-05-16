@@ -370,7 +370,6 @@ Here's the stage in full:
     - script: |
         echo "Running tests..."
         # Run the Go tests from the project directory
-        cd /app
         go test ./...
       displayName: 'Run tests'
 ```
