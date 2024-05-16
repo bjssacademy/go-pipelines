@@ -136,6 +136,42 @@ resource "azurerm_devops_pipeline" "example_pipeline" {
 
 [Here's the link to the terraform getting started guide on Azure](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/azure-build)
 
+## Install
+
+In WSL:
+```bash
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+```
+
+### Login to Azure from the commandline
+
+```bash
+az login --tenant 1491bbb5-26ff-4146-a689-da9d7f9df86f
+```
+
+Follow the instructions to log into your BJSS Azure account in a browser
+
+Official Install docs: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
+
+
+### Install Terraform
+
+* Install the Binaries
+
+```bash
+ wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+ sudo apt update && sudo apt install terraform
+```
+
+* Verify the Install
+```bash
+terraform -version
+```
+
+Official Install Docs:
+https://learn.hashicorp.com/tutorials/terraform/install-cli
+
 ## Create Terraform Infrastructure with Docker
 
 In the terraform-docker folder, open the `terraform.tf` file.
@@ -173,15 +209,34 @@ resource "docker_container" "nginx" {
 }
 ```
 
+### Terraform init
+
+When we start working with our Terraform project we need to first initialise it.
+
+*"The terraform init command is used to initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control. It is safe to run this command multiple times."*
+
 In the terminal, initialize the project, which downloads a plugin that allows Terraform to interact with Docker.
 
-```
+```bash
 terraform init
 ```
+### Terraform plan
+The terraform plan command is used to create an execution plan. Terraform performs a refresh, and determines what actions it needs to take to achieve the desired state specified in the configuration files.
+This command is a convenient way to check whether the execution plan for a set of changes matches your expectations without making any changes to real resources or to the state. For example, terraform plan might be run before committing a change to version control, to create confidence that it will behave as expected.
+
+Running a Plan:
+
+```bash
+terraform plan
+```
+
+### Terraform apply
+
+The terraform apply command is used to apply the changes required to reach the desired state of the configuration.
 
 Provision the NGINX server container with apply. When Terraform asks you to confirm, type yes and press ENTER.
 
-```
+```bash
 terraform apply
 ```
 
@@ -189,14 +244,14 @@ terraform apply
 
 Run `docker ps` to view the NGINX container running in Docker via Terraform.
 
-```
+```bash
 docker ps
 ```
 
 ### Destroy resources
 To stop the container and destroy the resources created in this tutorial, run `terraform destroy`. When Terraform asks you to confirm, type yes and press ENTER.
 
-```
+```bash
 terraform destroy
 ```
 
