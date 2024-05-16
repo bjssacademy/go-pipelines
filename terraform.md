@@ -135,3 +135,69 @@ resource "azurerm_devops_pipeline" "example_pipeline" {
 ## More Terraform
 
 [Here's the link to the terraform getting started guide on Azure](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/azure-build)
+
+## Create Terraform Infrastructure with Docker
+
+In the terraform-docker folder, open the `terraform.tf` file.
+
+This file includes the terraform block, which defines the provider and Terraform versions you will use with this project.
+
+```tf
+terraform {
+  required_providers {
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "~> 3.0.2"
+    }
+  }
+  required_version = "~> 1.7"
+}
+```
+Next, open `main.tf` and copy and paste the following configuration.
+
+```tf
+provider "docker" {}
+
+resource "docker_image" "nginx" {
+  name         = "nginx:latest"
+  keep_locally = false
+}
+
+resource "docker_container" "nginx" {
+  image = docker_image.nginx.image_id
+  name  = "tutorial"
+  ports {
+    internal = 80
+    external = 8000
+  }
+}
+```
+
+In the terminal, initialize the project, which downloads a plugin that allows Terraform to interact with Docker.
+
+```
+terraform init
+```
+
+Provision the NGINX server container with apply. When Terraform asks you to confirm, type yes and press ENTER.
+
+```
+terraform apply
+```
+
+### Verify NGINX instance
+
+Run `docker ps` to view the NGINX container running in Docker via Terraform.
+
+```
+docker ps
+```
+
+### Destroy resources
+To stop the container and destroy the resources created in this tutorial, run `terraform destroy`. When Terraform asks you to confirm, type yes and press ENTER.
+
+```
+terraform destroy
+```
+
+You have now provisioned and destroyed an NGINX webserver with Terraform.
